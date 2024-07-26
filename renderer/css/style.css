@@ -1,0 +1,45 @@
+#wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 2fr));
+
+
+    .locate {
+        border: black solid 1px;
+        border-radius: 15px;
+        height: 150px;
+        width: 250px;
+        display: flex;
+        margin: 20px;
+
+        align-items: center;
+        justify-content: center;
+
+        .left-info {
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+
+            h3 {
+                margin: 0;
+            }
+
+            .status-wrapper {
+                display: flex;
+
+                p {
+                    margin: 3px;
+                }
+            }
+        }
+
+        .right-info {
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+
+            button {
+                margin: 5px;
+            }
+        }
+    }
+}
