@@ -1,5 +1,6 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const {createSocket} = require("node:dgram");
+const path = require("node:path");
 
 const socket = createSocket("udp4");
 let port = 5700;
@@ -13,28 +14,35 @@ const createWindow = () => {
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,
+            preload: path.join(__dirname, 'preload.js'),
         },
     })
 
-    window.loadFile('index.html')
+    window.loadFile(path.join(__dirname, './renderer/views/index.html')).then();
+    window.webContents.openDevTools()
 }
 
 app.whenReady().then(() => {
     createWindow()
 
-    const json = '{"command":"get_all", "locate":"ar_guarita"}';
-    socket.send(json, port, address);
 })
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
+ipcMain.on('message', (event, args) => {
+    socket.send(args, port, address);
 
+    socket.on('message', (message) => {
+        console.log(message.toString())
 
-
-
-
-socket.on('message', (message) => {
-    console.log(message.toString())
+        event.sender.send("reply", message.toString());
+    })
 })
+
+
+
+
+
+
