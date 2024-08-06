@@ -3,6 +3,11 @@ const wrapper = document.getElementById("wrapper");
 
 const getAllButton = document.getElementById("get-all");
 
+const timerBox  = document.getElementById("timer");
+const timePicker = document.getElementById("timePicker");
+
+let timeout;
+
 class Message {
     constructor(command, locate, value, status) {
         this.command = command;
@@ -15,10 +20,29 @@ class Message {
 warmupLocations();
 
 getAllButton.addEventListener("click", (event) => {
+    getAll();
+})
+
+timerBox.addEventListener("change", (event) => {
+    if (timerBox.checked) {
+        startTimer();
+    } else {
+        clearTimeout(timeout);
+    }
+})
+
+function getAll() {
     let msg = new Message("get_all");
 
     ipcRenderer.send('message', JSON.stringify(msg));
-})
+}
+
+function startTimer() {
+    timeout = setTimeout(() => {
+        getAll();
+        startTimer();
+    }, timePicker.value);
+}
 
 function warmupLocations() {
     locations.forEach((location) => {
